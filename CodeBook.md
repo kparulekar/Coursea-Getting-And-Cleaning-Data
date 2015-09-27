@@ -1,95 +1,34 @@
-﻿# *Cleaning and Getting Data* course project code book
+﻿## Code Book
 
-### Analysis process
+This code book will describe the data used in this project, as well as the processing required to create the resulting tidy data set.
 
-The analysis script, `run_analysis.R` reads in the processed experiment data and performs a number of steps to get it into summary form.
+### Overview
 
- - Both the processed test and training datasets are read in and merged into one data frame.
- - The data columns are then given names based on the `features.txt` file.
- - Columns that hold mean or standard deviation measurements are selected from the dataset, while the other measurement columns are excluded from the rest of the analysis.
- - The activity identifiers are replaced with the activity labels based on the `activity_labels.txt` file.
- - Invalid characters (`()` and `-` in this case) are removed from the column names. Also, duplicate phrase `BodyBody` in some columns names is replaced with `Body`.
- - The data is then grouped by subject and activity, and the mean is calculated for every measurement column.
- - Finally, the summary dataset is written to a file, `run_data_summary.txt`.
+30 volunteers performed 6 different activities while wearing a smartphone. The smartphone captured various data about their movements.
 
-Each line in `run_analysis.R` is commented. Reference the file for more information on this process.
+### Explanation of each file
 
-### Columns in output file
+* `features.txt`: Names of the 561 features.
+* `activity_labels.txt`: Names and IDs for each of the 6 activities.
 
-The columns included in the output file are listed below:
+* `X_train.txt`: 7352 observations of the 561 features, for 21 of the 30 volunteers.
+* `subject_train.txt`: A vector of 7352 integers, denoting the ID of the volunteer related to each of the observations in `X_train.txt`.
+* `y_train.txt`: A vector of 7352 integers, denoting the ID of the activity related to each of the observations in `X_train.txt`.
 
-  - subject_id - The id of the experiment participant.
-  - activity_labels - The name of the activity that the measurements correspond to, like `LAYING` or `WALKING`.
+* `X_test.txt`: 2947 observations of the 561 features, for 9 of the 30 volunteers.
+* `subject_test.txt`: A vector of 2947 integers, denoting the ID of the volunteer related to each of the observations in `X_test.txt`.
+* `y_test.txt`: A vector of 2947 integers, denoting the ID of the activity related to each of the observations in `X_test.txt`.
 
-All of the following fields represent the mean of recorded data points for the given subject and activity. The detailed description of the different measurement types can be found in the `features_info.txt` file included in the data [zip file](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip).
+More information about the files is available in `README.txt`. More information about the features is available in `features_info.txt`.
 
-  - tBodyAcc_mean_X
-  - tBodyAcc_mean_Y
-  - tBodyAcc_mean_Z
-  - tGravityAcc_mean_X
-  - tGravityAcc_mean_Y
-  - tGravityAcc_mean_Z
-  - tBodyAccJerk_mean_X
-  - tBodyAccJerk_mean_Y
-  - tBodyAccJerk_mean_Z
-  - tBodyGyro_mean_X
-  - tBodyGyro_mean_Y
-  - tBodyGyro_mean_Z
-  - tBodyGyroJerk_mean_X
-  - tBodyGyroJerk_mean_Y
-  - tBodyGyroJerk_mean_Z
-  - tBodyAccMag_mean
-  - tGravityAccMag_mean
-  - tBodyAccJerkMag_mean
-  - tBodyGyroMag_mean
-  - tBodyGyroJerkMag_mean
-  - fBodyAcc_mean_X
-  - fBodyAcc_mean_Y
-  - fBodyAcc_mean_Z
-  - fBodyAccJerk_mean_X
-  - fBodyAccJerk_mean_Y
-  - fBodyAccJerk_mean_Z
-  - fBodyGyro_mean_X
-  - fBodyGyro_mean_Y
-  - fBodyGyro_mean_Z
-  - fBodyAccMag_mean
-  - fBodyAccJerkMag_mean
-  - fBodyGyroMag_mean
-  - fBodyGyroJerkMag_mean
-  - tBodyAcc_std_X
-  - tBodyAcc_std_Y
-  - tBodyAcc_std_Z
-  - tGravityAcc_std_X
-  - tGravityAcc_std_Y
-  - tGravityAcc_std_Z
-  - tBodyAccJerk_std_X
-  - tBodyAccJerk_std_Y
-  - tBodyAccJerk_std_Z
-  - tBodyGyro_std_X
-  - tBodyGyro_std_Y
-  - tBodyGyro_std_Z
-  - tBodyGyroJerk_std_X
-  - tBodyGyroJerk_std_Y
-  - tBodyGyroJerk_std_Z
-  - tBodyAccMag_std
-  - tGravityAccMag_std
-  - tBodyAccJerkMag_std
-  - tBodyGyroMag_std
-  - tBodyGyroJerkMag_std
-  - fBodyAcc_std_X
-  - fBodyAcc_std_Y
-  - fBodyAcc_std_Z
-  - fBodyAccJerk_std_X
-  - fBodyAccJerk_std_Y
-  - fBodyAccJerk_std_Z
-  - fBodyGyro_std_X
-  - fBodyGyro_std_Y
-  - fBodyGyro_std_Z
-  - fBodyAccMag_std
-  - fBodyAccJerkMag_std
-  - fBodyGyroMag_std
-  - fBodyGyroJerkMag_std
+### Data files that were not used
 
-### More information
+This analysis was performed using only the files above, and did not use the raw signal data. Therefore, the data files in the "Inertial Signals" folders were ignored.
 
-Detailed information on the experiment and the data can be found in the `README.txt` and `features_info.txt` files included in the experiment data [zip file](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip) or find more information on the dataset [homepage](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones).
+### Processing steps
+
+1. All of the relevant data files were read into data frames, appropriate column headers were added, and the training and test sets were combined into a single data set.
+2. All feature columns were removed that did not contain the exact string "mean()" or "std()". This left 66 feature columns, plus the subjectID and activity columns.
+3. The activity column was converted from a integer to a factor, using labels describing the activities.
+4. A tidy data set was created containing the mean of each feature for each subject and each activity. Thus, subject #1 has 6 rows in the tidy data set (one row for each activity), and each row contains the mean value for each of the 66 features for that subject/activity combination. Since there are 30 subjects, there are a total of 180 rows.
+5. The tidy data set was output to a txt file.
